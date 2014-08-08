@@ -10,7 +10,8 @@ require_once __DIR__ . '/include/DbHandler.php';
  */
 if (isset($_POST['username']) && isset($_POST['taskName']) && isset($_POST['taskDescription']) 
     && isset($_POST['dueDate']) && isset($_POST['reminderDate']) && isset($_POST['isReminder'])
-    && isset($_POST['isDueDate'])&& isset($_POST['isComplete']) && isset($_POST['updatedDate'])) {
+    && isset($_POST['isDueDate'])&& isset($_POST['isComplete']) 
+    && isset($_POST['createdDate']) && isset($_POST['updatedDate'])) {
     
     $response = array();
     $username = $_POST['username'];
@@ -21,6 +22,7 @@ if (isset($_POST['username']) && isset($_POST['taskName']) && isset($_POST['task
     $isReminder = $_POST['isReminder'];
     $isDueDate = $_POST['isDueDate'];
     $isComplete = $_POST['isComplete'];
+    $createdDate = $_POST['createdDate'];
     $updatedDate = $_POST['updatedDate'];
     
     $db = new DbHandler();
