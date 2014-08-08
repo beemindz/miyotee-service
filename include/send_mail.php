@@ -1,9 +1,9 @@
 <?php
-$response = array();
-include 'php_mailer/config.php'; // include the library file
-include "php_mailer/class.phpmailer.php"; // include the class name
+
+require_once __DIR__ .'/php_mailer/config.php'; // include the library file
+require_once __DIR__ . "/php_mailer/class.phpmailer.php"; // include the class name
 function sendmail($email) {
-	if (smtpmailer($email, 'miyoteeapp@gmail.com', 'yourName', '[Miyotee]-test mail message', 'Hello World!')) {
+	if (smtpmailer($email, 'miyoteeapp@gmail.com', 'Miyotee', '[Miyotee]-test mail message', 'Hello World!')) {
 		return 1;	
 	}
 	if (!empty($error)) return 0;

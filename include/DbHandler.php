@@ -159,6 +159,34 @@ class DbHandler {
             return NULL;
         }
     }
+	
+	/**
+	* update password user.
+	*/
+	public function updateUser($email) {
+		if ($this->isUserExists($email)) {
+		  $password = DEFAULT_PASSWORD;
+            // insert query
+            $stmt = $this->conn->prepare("UPDATE users SET password = ? WHERE username = ? ");
+            $stmt->bind_param("ss", $password, $email );
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful updation
+            if ($result) {
+                // User successfully updated
+                return USER_CREATED_SUCCESSFULLY;
+            }
+			
+            // Failed to update user
+            return USER_CREATE_FAILED;           
+        } 
+		
+        // User with same email already not existed in the db
+        return USER_ALREADY_NOT_EXISTED;
+	}
 
    
     /* ------------- `tasks` table method ------------------ */
