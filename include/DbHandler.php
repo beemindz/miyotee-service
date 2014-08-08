@@ -11,7 +11,7 @@ class DbHandler {
 
     private $conn;
 
-    function __construct() {    
+    function __construct() {
         require_once dirname(__FILE__) . '/DbConnect.php';
         // opening db connection
         $db = new DbConnect();
@@ -169,20 +169,21 @@ class DbHandler {
      * @param String $task task text
      */
     public function createTask($user_id, $taskName, $taskDescription,$dueDate, $reminderDate,
-        $isReminder, $isDueDate, $isComplete, $updatedDate) {
-           
-        if($updatedDate == NULL || $updatedDate == ""){
-            $updatedDate = new DateTime("now");
-        } else {
-            $updatedDate = new DateTime($updatedDate);
+        $isReminder, $isDueDate, $isComplete, $createdDate, $updatedDate) {
+            
+        $dateTime = new DateTime("now");
+        if($createdDate == NULL || $createdDate == "") {
+            $createdDate = $dateTime->format("Y-m-d H:i:s");    
+        }
+        if($updatedDate == NULL)
+        {
+            $updatedDate = $dateTime->format("Y-m-d H:i:s");
         }
         
-        $updateFormat = $updatedDate->format("Y-m-d H:i:s");
-        
         $stmt = $this->conn->prepare("INSERT INTO tasks(userId, taskName, taskDescription, dueDate, reminderDate,
-            isReminder, isDueDate, isComplete,  updatedDate) VALUES(?,?,?,?,?,?,?,?,?)");
-        $stmt->bind_param("issssssss", $user_id, $taskName, $taskDescription,$dueDate, $reminderDate,
-            $isReminder, $isDueDate, $isComplete, $updateFormat);
+            isReminder, isDueDate, isComplete, createdDate,updatedDate) VALUES(?,?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param("isssssssss", $user_id, $taskName, $taskDescription,$dueDate, $reminderDate,
+            $isReminder, $isDueDate, $isComplete, $createdDate, $updatedDate);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -268,19 +269,24 @@ class DbHandler {
     public function updateTask($task_id, $taskName, $taskDescription,$dueDate, $reminderDate, $isReminder,
         $isDueDate, $isComplete, $updatedDate ) {
             
-           
-        if($updatedDate == NULL || $updatedDate == ""){
-            $updatedDate = new DateTime("now");
-        } else {
-            $updatedDate = new DateTime($updatedDate);
+            $dueDateDefault = new DateTime();
+            $updatedDateDefault = new DateTime();
+            $reminderDateDefault = new DateTime();
+            
+        if($updatedDate != NULL || $updatedDate != ""){
+            date_timestamp_set($updatedDateDefault, $updatedDate);
         }
-        
-        $updateDateFormat = $updatedDate->format("Y-m-d H:i:s");
+        if($reminderDate != NULL || $reminderDate != "") {
+         date_timestamp_set($reminderDateDefault, $reminderDate);   
+        }
+        if($dueDate != NULL || $dueDate != "") {
+         date_timestamp_set($dueDateDefault, $dueDate);   
+        }
         
         $stmt = $this->conn->prepare("UPDATE tasks SET taskName = ?, taskDescription = ?,dueDate = ?,
             reminderDate = ?, isReminder = ?, isDueDate = ?, isComplete = ?, updatedDate = ? WHERE taskId = ?");
-        $stmt->bind_param("ssssssssi", $taskName, $taskDescription,$dueDate, $reminderDate,
-            $isReminder, $isDueDate, $isComplete, $updateDateFormat, $task_id);
+        $stmt->bind_param("ssssssssi", $taskName, $taskDescription,$dueDateDefault, $reminderDateDefault,
+            $isReminder, $isDueDate, $isComplete, $updatedDateDefault, $task_id);
         $stmt->execute();
         $num_affected_rows = $stmt->affected_rows;
         $stmt->close();
