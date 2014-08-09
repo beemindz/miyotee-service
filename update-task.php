@@ -8,11 +8,12 @@ require_once __DIR__ . '/include/DbHandler.php';
  * params - name
  * url - /tasks/
  */
-if (isset($_POST['username']) && isset($_POST['taskName']) && isset($_POST['taskDescription']) 
+if (isset($_POST['username']) && isset($_POST['taskId']) && isset($_POST['taskName']) && isset($_POST['taskDescription']) 
     && isset($_POST['dueDate']) && isset($_POST['reminderDate']) && isset($_POST['isReminder'])
     && isset($_POST['isDueDate'])&& isset($_POST['isComplete']) && isset($_POST['updatedDate'])) {
     
     $response = array();
+    $taskId = $_POST['taskId'];
     $username = $_POST['username'];
     $taskName = $_POST['taskName'];
     $taskDescription = $_POST['taskDescription'];
@@ -27,7 +28,7 @@ if (isset($_POST['username']) && isset($_POST['taskName']) && isset($_POST['task
 
     $user = $db->getUserByEmail($username);
     if($user != null) {
-        $result = $db->updateTask($task_id, $taskName, $taskDescription,$dueDate, $reminderDate, $isReminder,
+        $result = $db->updateTask($taskId, $taskName, $taskDescription,$dueDate, $reminderDate, $isReminder,
         $isDueDate, $isComplete, $updatedDate);
         if ($result) {
             $task = $db->getTask($taskId);
